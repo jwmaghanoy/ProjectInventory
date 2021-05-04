@@ -1,30 +1,52 @@
 import {Form, Button, Table } from "react-bootstrap";
-import { useState} from 'react';
+import { useState,createRef} from 'react';
 export default function AddProduct(){
     //add product handler method
     let initialValue = [];
     const [products, setProduct ] = useState(initialValue);
+    const formData = createRef();
+    const incIndex = createRef();
     //products = []
     const add = (event)=>{
         event.preventDefault(); // to check the console
         //console.log(event.target); // to check the line of form in the console
         //console.log(event.target.product_name.value);
+        
+        // const newProduct = {
+        //     product_name: formData.product_name.value,
+        //     price: formData.price.value,
+        //     qty: formData.qty.value
 
-        const formData = event.target;
+        // }
+
+        //console.log(formData.current)
         const newProduct = {
-            product_name: formData.product_name.value,
-            price: formData.price.value,
-            qty: formData.qty.value
+            product_name: formData.current.product_name.value,
+            price: formData.current.price.value,
+            qty: Number(formData.current.qty.value)
 
         }
         //console.log(newProduct); 
         // add a new product inside products array
-        setProduct([...products, newProduct]); 
-        console.log(products);
+        setProduct([...products,newProduct]); 
+        //console.log(products); => show list in the console
     }
+    //increment qty value by 1
+    const increQty = (event)=> {
+            //console.log(incIndex.current.value)
+            const indexofArray = event.target.value;
+            products[indexofArray].qty=products[indexofArray].qty+1;
+            setProduct([...products])
+        }
+
+//decrement qty value by 1
+    const decreQty = ()=> {
+        
+    }
+
     return (
         <div>
-            <Form onSubmit={add}> 
+            <Form onSubmit={add} ref={formData}> 
   <Form.Group controlId="formBasicProduct">
     <Form.Label>Product Name:</Form.Label>
     <Form.Control type="text" placeholder="Enter Product" name="product_name"/>
@@ -53,6 +75,7 @@ export default function AddProduct(){
       <th>Product Name</th>
       <th>Price</th>
       <th>Quantity</th>
+      <th>Options</th>
     </tr>
   </thead>
   <tbody>
@@ -60,11 +83,16 @@ export default function AddProduct(){
         products.map((item,index)=>
         {
             return(
-                <tr>
-                <td>{index}</td>
-                <td>{item.product_name}</td>
-                <td>{item.price}</td>
-                <td>{item.qty}</td>
+                <tr key={index}>
+                    <td>{index}</td>
+                    <td>{item.product_name}</td>
+                    <td>{item.price}</td>
+                    <td>{item.qty}</td>
+                    <td>
+                    <Button variant="sucess" onClick={increQty}
+                    ref={incIndex} value={index}>+</Button>{' '}
+                    <Button variant="danger" onClick={decreQty}>-</Button>{' '}
+                    </td>
                 </tr>
             )
 
